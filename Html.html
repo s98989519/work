@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Formatter & Validator</title>
+    <style>
+        body { font-family: monospace; background: #1e1e1e; color: #d4d4d4; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        textarea { width: 100%; height: 200px; background: #252526; color: #9cdcfe; border: 1px solid #3c3c3c; padding: 10px; }
+        button { background: #0e639c; color: white; border: none; padding: 10px 20px; cursor: pointer; margin-top: 10px; }
+        #output { background: #2d2d2d; padding: 15px; border-radius: 5px; margin-top: 20px; white-space: pre-wrap; min-height: 100px; border-left: 4px solid #0e639c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>System Data Processor v1.0.4</h2>
+        <p>Input raw data for cleaning and analysis:</p>
+        <textarea id="userInput" placeholder="Paste logs or data here..."></textarea>
+        <button onclick="processData()">Run Analysis</button>
+        <div id="output">Waiting for input...</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
