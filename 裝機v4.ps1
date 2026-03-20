@@ -42,6 +42,9 @@ foreach ($c in $choices) {
 }
 Set-WinUserLanguageList $LangList -Force
 
+# 加入 -WarningAction SilentlyContinue 隱藏黃字警告
+Set-WinUserLanguageList $LangList -Force -WarningAction SilentlyContinue | Out-Null
+
 # --- 3. 檔案佈署 ---
 $sourceDir = "C:\temp\新人裝機桌面常用捷徑"
 $destDesktop = [Environment]::GetFolderPath("Desktop")
