@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>報修單搜尋系統</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f6fa;
+            --text-color: #2c3e50;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-top: 10px;
+        }
+
+        .search-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+            display: none;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .field-selector {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .field-selector h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #444;
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .view-mode-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .view-mode-selector label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .view-mode-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-mode-btn {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-mode-btn:hover {
+            background: #e9ecef;
+        }
+
+        .view-mode-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .info-box {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            color: #2c3e50;
+            font-size: 0.95rem;
+            border-left: 4px solid #4a90e2;
+        }
+
+        .results-section {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .result-header {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            padding-left: 10px;
+            border-left: 5px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .sort-btn {
+            padding: 8px 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sort-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .sort-btn:active {
+            transform: translateY(0);
+        }
+
+        .sort-icon {
+            font-size: 1.1em;
+            transition: transform 0.3s ease;
+        }
+
+        .sort-btn.asc .sort-icon {
+            transform: rotate(180deg);
+        }
+
+        /* 詳細卡片式樣式 */
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            animation: slideIn 0.4s ease-out;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .ticket-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .card-body {
+            margin-bottom: 15px;
+        }
+
+        .field-label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .field-value {
+            color: #333;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #ffd700 0%, #ffed4e 100%);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        /* 報修單連結樣式 */
+        .ticket-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-left: 10px;
+            background: rgba(102, 126, 234, 0.1);
+            font-size: 0.9em;
+        }
+
+        .ticket-link:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateX(3px);
+            color: #5568d3;
+        }
+
+        .ticket-link::before {
+            content: '🔗';
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-size: 1.2rem;
+            padding: 20px;
+        }
+
+        .error-message {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+
+        /* 簡易條列式樣式 */
+        .list-view-item {
+            background: white;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+        }
+
+        .list-view-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .list-view-item .ticket-id {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .list-view-item .brief-info {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .compact-view-item {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 0;
+            /* Grid handles gap */
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eee;
+        }
+
+        .compact-view-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .compact-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            /* Align to top for multi-line text */
+            gap: 10px;
+            user-select: none;
+            min-height: 60px;
+            /* Ensure header has some height */
+        }
+
+        .compact-header:hover {
+            opacity: 0.95;
+        }
+
+        .compact-title {
+            font-weight: bold;
+            font-size: 15px;
+            line-height: 1.4;
+            word-break: break-word;
+            /* Prevent overflow */
+        }
+
+        .compact-toggle {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            /* Prevent arrow from shrinking */
+            margin-top: 2px;
+        }
+
+        .compact-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .compact-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: #fff;
+        }
+
+        .compact-content.open {
+            max-height: 1000px;
+            /* Adjust if content is very long */
+            overflow-y: auto;
+        }
+
+        .compact-body {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        /* Expanded state styles */
+        .compact-view-item.expanded {
+            grid-column: 1 / -1;
+            z-index: 10;
+        }
+
+        .compact-view-item.hidden-sibling {
+            display: none;
+        }
+
+        @media (max-width: 992px) {
+            .compact-grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .compact-grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .search-section {
+                padding: 25px;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .checkbox-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🔧 報修單搜尋系統</h1>
+            <p class="subtitle">快速查找歷史報修案例與解決方案</p>
+        </header>
+
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="請輸入問題關鍵字..."
+                    onkeypress="if(event.key === 'Enter') performSearch()">
+                <button class="btn btn-primary" onclick="performSearch()">🔍 搜尋</button>
+                <button class="btn btn-secondary" onclick="showReloadInfo()">🔄 重新載入數據</button>
+            </div>
+
+            <div class="field-selector">
+                <h3>📋 選擇顯示欄位</h3>
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="field_ticket" checked disabled> 
+                        <label for="field_ticket">報修單號 (必選)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="field_problem" checked>
+                        <label for="field_problem">問題描述</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="field_solution" checked>
+                        <label for="field_solution">解決方式</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="field_date" checked>
+                        <label for="field_date">日期</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="field_type">
+                        <label for="field_type">報修單種類</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="field_empid">
+                        <label for="field_empid">客戶員編</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="field_customer">
+                        <label for="field_customer">客戶</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="field_dept">
+                        <label for="field_dept">客戶單位</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="field_phone">
+                        <label for="field_phone">連絡電話</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="field_engineer">
+                        <label for="field_engineer">工程師名稱</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-mode-selector">
+                <label>📊 顯示方式:</label>
+                <div class="view-mode-buttons">
+                    <button class="view-mode-btn active" onclick="setViewMode('card')" data-mode="card">詳細卡片式</button>
+                    <button class="view-mode-btn" onclick="setViewMode('list')" data-mode="list">簡易條列式</button>
+                   
+                </div>
+            </div>
+
+            <div class="info-box">
+                <p>
+                    💡 <strong>使用提示:</strong>輸入問題相關的關鍵字,會自動比對歷史報修紀錄,找出所有相關案例。
+                </p>
+            </div>
+        </div>
+
+        <div id="resultsContainer" class="results-section"></div>
+    </div>
+
+    <script src="case_data.js"></script>
+    <script>
+        // 當前視圖模式
+        let currentViewMode = 'card';
+
+        // 排序狀態: null (未排序), 'desc' (降序，日期由近到遠), 'asc' (升序，日期由遠到近)
+        let sortOrder = null;
+
+        // 儲存當前搜尋結果和搜尋詞
+        let currentResults = [];
+        let currentSearchTerm = '';
+
+        // 設置視圖模式
+        function setViewMode(mode) {
+            currentViewMode = mode;
+
+            // 更新按鈕樣式
+            document.querySelectorAll('.view-mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+
+            // 如果有搜尋結果,重新顯示
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            if (searchTerm) {
+                const results = searchCases(searchTerm);
+                displayResults(results, searchTerm);
+            }
+        }
+
+        // 切換摺疊狀態
+        function toggleCompact(index) {
+            const content = document.getElementById(`compact-content-${index}`);
+            const toggle = document.getElementById(`compact-toggle-${index}`);
+            const currentItem = toggle ? toggle.closest('.compact-view-item') : null;
+            const container = document.querySelector('.compact-grid-container');
+
+            if (!content || !toggle || !currentItem || !container) return;
+
+            const isOpening = !content.classList.contains('open');
+
+            // Reset all items first
+            const allItems = document.querySelectorAll('.compact-view-item');
+            const itemsArray = Array.from(allItems);
+
+            if (isOpening) {
+                // 1. Close any other open items first to reset grid
+                itemsArray.forEach(item => {
+                    const itemContent = item.querySelector('.compact-content');
+                    const itemToggle = item.querySelector('.compact-toggle');
+                    if (item !== currentItem && itemContent && itemContent.classList.contains('open')) {
+                        itemContent.classList.remove('open');
+                        if (itemToggle) itemToggle.classList.remove('open');
+                        item.classList.remove('expanded');
+                    }
+                    item.classList.remove('hidden-sibling');
+                });
+
+                // 2. Calculate row siblings
+                // We need to know which items are in the same row *before* we expand.
+                // We can determine this by their offsetTop.
+                const currentTop = currentItem.offsetTop;
+                const rowSiblings = itemsArray.filter(item =>
+                    item !== currentItem &&
+                    Math.abs(item.offsetTop - currentTop) < 10 // Tolerance for sub-pixel differences
+                );
+
+                // 3. Hide siblings
+                rowSiblings.forEach(sibling => {
+                    sibling.classList.add('hidden-sibling');
+                });
+
+                // 4. Expand current
+                currentItem.classList.add('expanded');
+                content.classList.add('open');
+                toggle.classList.add('open');
+
+                // Scroll to item if needed
+                setTimeout(() => {
+                    currentItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 300);
+
+            } else {
+                // Closing
+                content.classList.remove('open');
+                toggle.classList.remove('open');
+                currentItem.classList.remove('expanded');
+
+                // Show all hidden siblings
+                itemsArray.forEach(item => {
+                    item.classList.remove('hidden-sibling');
+                });
+            }
+        }
+
+        // 檢查數據是否載入
+        if (typeof caseData === 'undefined') {
+            document.getElementById('resultsContainer').innerHTML = `
+                <div class="error-message">
+                    <strong>⚠️ 數據未載入</strong><br><br>
+                    請先執行以下步驟:<br>
+                    1️⃣ 確認 <strong>非派工問題處理數量.xls</strong> 檔案存在<br>
+                    2️⃣ 雙擊執行 <strong>data_loader.vbs</strong><br>
+                    &nbsp;&nbsp;&nbsp;⏳ 執行時會顯示即時進度視窗<br>
+                    3️⃣ 等待處理完成後,重新整理此頁面 (按 F5)
+                </div>
+            `;
+        }
+
+        // 獲取選中的欄位
+        function getSelectedFields() {
+            return {
+                ticket: true, // 報修單號永遠顯示
+                problem: document.getElementById('field_problem').checked,
+                solution: document.getElementById('field_solution').checked,
+                date: document.getElementById('field_date').checked,
+                type: document.getElementById('field_type').checked,
+                empid: document.getElementById('field_empid').checked,
+                customer: document.getElementById('field_customer').checked,
+                dept: document.getElementById('field_dept').checked,
+                phone: document.getElementById('field_phone').checked,
+                engineer: document.getElementById('field_engineer').checked
+            };
+        }
+
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const resultsContainer = document.getElementById('resultsContainer');
+
+            if (!searchTerm) {
+                resultsContainer.innerHTML = `<div class="no-results">⌨️ 請輸入搜尋關鍵字</div>`;
+                return;
+            }
+
+            if (typeof caseData === 'undefined' || !Array.isArray(caseData)) {
+                resultsContainer.innerHTML = `
+                    <div class="error-message">
+                        <strong>⚠️ 無法讀取數據</strong><br><br>
+                        請執行 data_loader.vbs 來載入數據。
+                    </div>
+                `;
+                return;
+            }
+
+            resultsContainer.innerHTML = '<div class="loading">🔍 搜尋中...</div>';
+
+            setTimeout(() => {
+                const results = searchCases(searchTerm);
+                // 儲存當前搜尋結果和搜尋詞
+                currentResults = results;
+                currentSearchTerm = searchTerm;
+                // 重設排序狀態
+                sortOrder = null;
+                displayResults(results, searchTerm);
+            }, 300);
+        }
+
+        // 排序函數
+        function toggleSort() {
+            if (currentResults.length === 0) return;
+
+            // 切換排序狀態: null -> desc -> asc -> desc ...
+            if (sortOrder === null || sortOrder === 'asc') {
+                sortOrder = 'desc'; // 日期由近到遠（最新的在前）
+            } else {
+                sortOrder = 'asc'; // 日期由遠到近（最舊的在前）
+            }
+
+            // 排序結果
+            const sortedResults = [...currentResults].sort((a, b) => {
+                const dateA = parseDate(a.data['日期']);
+                const dateB = parseDate(b.data['日期']);
+
+                // 如果日期無效，放到最後
+                if (!dateA && !dateB) return 0;
+                if (!dateA) return 1;
+                if (!dateB) return -1;
+
+                if (sortOrder === 'desc') {
+                    return dateB - dateA; // 日期由近到遠
+                } else {
+                    return dateA - dateB; // 日期由遠到近
+                }
+            });
+
+            displayResults(sortedResults, currentSearchTerm);
+        }
+
+        // 解析日期字串為 Date 物件
+        function parseDate(dateStr) {
+            if (!dateStr) return null;
+
+            // 嘗試多種日期格式
+            // 格式1: YYYY/MM/DD 或 YYYY-MM-DD
+            let parts = dateStr.split(/[\/\-]/);
+            if (parts.length === 3) {
+                const year = parseInt(parts[0]);
+                const month = parseInt(parts[1]) - 1; // 月份從0開始
+                const day = parseInt(parts[2]);
+                const date = new Date(year, month, day);
+                if (!isNaN(date.getTime())) return date;
+            }
+
+            // 格式2: MM/DD/YYYY 或 DD/MM/YYYY (嘗試直接解析)
+            const date = new Date(dateStr);
+            if (!isNaN(date.getTime())) return date;
+
+            return null;
+        }
+
+        function searchCases(searchTerm) {
+            const keywords = searchTerm.toLowerCase().split(' ').filter(k => k.length > 0);
+            const results = [];
+            const fields = getSelectedFields();
+
+            caseData.forEach(caseItem => {
+                let searchableText = '';
+
+                if (fields.problem) searchableText += (caseItem['問題'] || '') + ' ';
+                if (fields.solution) searchableText += (caseItem['解決方法'] || caseItem['解決方式'] || '') + ' ';
+                if (fields.date) searchableText += (caseItem['日期'] || '') + ' ';
+                if (fields.type) searchableText += (caseItem['報修單種類'] || '') + ' ';
+                if (fields.empid) searchableText += (caseItem['客戶員編'] || '') + ' ';
+                if (fields.customer) searchableText += (caseItem['客戶'] || '') + ' ';
+                if (fields.dept) searchableText += (caseItem['客戶單位'] || '') + ' ';
+                if (fields.phone) searchableText += (caseItem['連絡電話'] || '') + ' ';
+                if (fields.engineer) searchableText += (caseItem['備註'] || '') + ' ';
+                searchableText += (caseItem['渣打報修單號'] || '') + ' ';
+
+                const fullText = searchableText.toLowerCase();
+                const isMatch = keywords.every(keyword => fullText.includes(keyword));
+
+                if (isMatch) {
+                    results.push({
+                        data: caseItem,
+                        matchedKeywords: keywords
+                    });
+                }
+            });
+
+            return results;
+        }
+
+        function displayResults(results, searchTerm) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const fields = getSelectedFields();
+
+            if (results.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="no-results">
+                        😕 找不到相關的報修紀錄<br><br>
+                        請嘗試使用其他關鍵字
+                    </div>
+                `;
+                return;
+            }
+
+            // 排序按鈕的圖標和文字
+            let sortIcon = '';
+            let sortText = '日期排序';
+            let sortClass = '';
+
+            if (sortOrder === 'desc') {
+                sortIcon = '⬆';
+                sortText = '日期由近到遠';
+                sortClass = 'desc';
+            } else if (sortOrder === 'asc') {
+                sortIcon = '⬆';
+                sortText = '日期由遠到近';
+                sortClass = 'asc';
+            }
+
+            let html = `
+                <h2 class="result-header">
+                    <span>📋 找到 ${results.length} 筆相關紀錄</span>
+                    <button class="sort-btn ${sortClass}" onclick="toggleSort()" title="點擊切換排序方式">
+                        <span class="sort-icon">${sortIcon}</span>
+                        <span>${sortText}</span>
+                    </button>
+                </h2>
+            `;
+
+            // 如果是 compact 模式，添加 grid container 開頭
+            if (currentViewMode === 'compact') {
+                html += '<div class="compact-grid-container">';
+            }
+
+            results.forEach((result, index) => {
+                const caseItem = result.data;
+
+                // 根據不同模式生成不同的 HTML
+                if (currentViewMode === 'list') {
+                    // 簡易條列式 - 動態顯示所有勾選欄位
+                    let listContent = '';
+
+                    if (fields.problem) listContent += `<strong>問題:</strong> ${highlightKeywords(caseItem['問題'] || '無資料', result.matchedKeywords)}<br>`;
+                    if (fields.solution) listContent += `<strong>解決:</strong> ${highlightKeywords(caseItem['解決方法'] || caseItem['解決方式'] || '無資料', result.matchedKeywords)}<br>`;
+                    if (fields.date && caseItem['日期']) listContent += `<strong>日期:</strong> ${escapeHtml(caseItem['日期'])}<br>`;
+                    if (fields.type && caseItem['報修單種類']) listContent += `<strong>種類:</strong> ${escapeHtml(caseItem['報修單種類'])}<br>`;
+                    if (fields.empid && caseItem['客戶員編']) listContent += `<strong>員編:</strong> ${escapeHtml(caseItem['客戶員編'])}<br>`;
+                    if (fields.customer && caseItem['客戶']) listContent += `<strong>客戶:</strong> ${escapeHtml(caseItem['客戶'])}<br>`;
+                    if (fields.dept && caseItem['客戶單位']) listContent += `<strong>單位:</strong> ${escapeHtml(caseItem['客戶單位'])}<br>`;
+                    if (fields.phone && caseItem['連絡電話']) listContent += `<strong>電話:</strong> ${escapeHtml(caseItem['連絡電話'])}<br>`;
+                    if (fields.engineer && caseItem['備註']) listContent += `<strong>工程師:</strong> ${escapeHtml(caseItem['備註'])}<br>`;
+
+                    const ticketNumber = caseItem['渣打報修單號'] || 'N/A';
+                    const ticketUrl = `https://scbnow01.service-now.com/now/nav/ui/search/0f8b85d0c7922010099a308dc7c2606a/params/search-term/${encodeURIComponent(ticketNumber)}/global-search-data-config-id/c861cea2c7022010099a308dc7c26041 `;
+
+                    html += `
+                        <div class="list-view-item" style="animation-delay: ${index * 0.05}s">
+                            <div class="ticket-id">
+                                📝 ${escapeHtml(ticketNumber)}
+                                ${ticketNumber !== 'N/A' ? `<a href="${ticketUrl}" target="_blank" class="ticket-link" title="在 ServiceNow 中查看">查看報修單</a>` : ''}
+                            </div>
+                            <div class="brief-info">
+                                ${listContent}
+                            </div>
+                        </div>
+                    `;
+                 
+                } else {
+                    // 詳細卡片式 (預設)
+                    const ticketNumber = caseItem['渣打報修單號'] || 'N/A';
+                    const ticketUrl = `https://scbnow01.service-now.com/now/nav/ui/search/0f8b85d0c7922010099a308dc7c2606a/params/search-term/${encodeURIComponent(ticketNumber)}/global-search-data-config-id/c861cea2c7022010099a308dc7c26041 `;
+
+                    html += `
+                        <div class="result-card" style="animation-delay: ${index * 0.05}s">
+                            <div class="card-header">
+                                <div class="ticket-number">
+                                    📝 ${escapeHtml(ticketNumber)}
+                                    ${ticketNumber !== 'N/A' ? `<a href="${ticketUrl}" target="_blank" class="ticket-link" title="在 ServiceNow 中查看">查看報修單</a>` : ''}
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                ${generateDetailsHtml(caseItem, result.matchedKeywords, fields)}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            // 如果是 compact 模式，添加 grid container 結尾
+            if (currentViewMode === 'compact') {
+                html += '</div>';
+            }
+
+            resultsContainer.innerHTML = html;
+        }
+
+        // 輔助函數: 生成詳細內容 HTML (用於卡片式和摺疊式)
+        function generateDetailsHtml(caseItem, matchedKeywords, fields) {
+            let detailsHtml = '';
+            let gridItems = [];
+
+            // 問題描述
+            if (fields.problem) {
+                detailsHtml += `
+                    <div class="field-label">🔍 問題描述</div>
+                    <div class="field-value">${highlightKeywords(caseItem['問題'] || '無資料', matchedKeywords)}</div>
+                `;
+            }
+
+            // 解決方式
+            if (fields.solution) {
+                detailsHtml += `
+                    <div class="field-label">✅ 解決方式</div>
+                    <div class="field-value">${highlightKeywords(caseItem['解決方法'] || caseItem['解決方式'] || '無資料', matchedKeywords)}</div>
+                `;
+            }
+
+            // 日期
+            if (fields.date && caseItem['日期']) {
+                gridItems.push(`
+                    <div>
+                        <div class="field-label">📅 日期</div>
+                        <div class="field-value">${escapeHtml(caseItem['日期'])}</div>
+                    </div>
+                `);
+            }
+
+            // 報修單種類
+            if (fields.type && caseItem['報修單種類']) {
+                gridItems.push(`
+                    <div>
+                        <div class="field-label">📋 報修單種類</div>
+                        <div class="field-value">${escapeHtml(caseItem['報修單種類'])}</div>
+                    </div>
+                `);
+            }
+
+            // 客戶員編
+            if (fields.empid && caseItem['客戶員編']) {
+                gridItems.push(`
+                    <div>
+                        <div class="field-label">🔢 客戶員編</div>
+                        <div class="field-value">${escapeHtml(caseItem['客戶員編'])}</div>
+                    </div>
+                `);
+            }
+
+            // 客戶
+            if (fields.customer && caseItem['客戶']) {
+                gridItems.push(`
+                    <div>
+                        <div class="field-label">👤 客戶</div>
+                        <div class="field-value">${escapeHtml(caseItem['客戶'])}</div>
+                    </div>
+                `);
+            }
+
+            // 客戶單位
+            if (fields.dept && caseItem['客戶單位']) {
+                gridItems.push(`
+                    <div>
+                        <div class="field-label">🏢 客戶單位</div>
+                        <div class="field-value">${escapeHtml(caseItem['客戶單位'])}</div>
+                    </div>
+                `);
+            }
+
+            // 連絡電話
+            if (fields.phone && caseItem['連絡電話']) {
+                gridItems.push(`
+                    <div>
+                        <div class="field-label">📞 連絡電話</div>
+                        <div class="field-value">${escapeHtml(caseItem['連絡電話'])}</div>
+                    </div>
+                `);
+            }
+
+            // Grid items HTML
+            if (gridItems.length > 0) {
+                detailsHtml += `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                        ${gridItems.join('')}
+                    </div>
+                `;
+            }
+
+            // 工程師名稱
+            if (fields.engineer && caseItem['備註']) {
+                detailsHtml += `
+                    <div style="margin-top: 15px;">
+                        <div class="field-label">📝 工程師名稱</div>
+                        <div class="field-value">${escapeHtml(caseItem['備註'])}</div>
+                    </div>
+                `;
+            }
+
+            return detailsHtml;
+        }
+
+        function highlightKeywords(text, keywords) {
+            if (!text) return '';
+            let highlightedText = escapeHtml(text);
+
+            keywords.forEach(keyword => {
+                const regex = new RegExp(`(${escapeRegExp(keyword)})`, 'gi');
+                highlightedText = highlightedText.replace(regex, '<span class="highlight">$1</span>');
+            });
+
+            return highlightedText;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        
+    </script>
+</body>
+
+</html>
