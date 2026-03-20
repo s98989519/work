@@ -49,7 +49,7 @@ $IME_Table = [ordered]@{
     "5" = @{ Name = "快速 (Quick)";    ID = "0404:{531FDEBF-9B4C-4A43-A2AA-960E8FCDC732}{6024B45F-5C54-11D4-B921-0080C882687E}" }
 }
 
-Write-Host "`n=== 請選擇要新增的輸入法 (例如 34 或 3 5) ===" -ForegroundColor Cyan
+Write-Host "`n=== 請選擇要新增的輸入法 (可輸入多個選項) ===" -ForegroundColor Cyan
 foreach ($k in $IME_Table.Keys) { Write-Host "$k. $($IME_Table[$k].Name)" }
 
 $choices = @()
