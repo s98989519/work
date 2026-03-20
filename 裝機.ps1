@@ -30,17 +30,12 @@ if (Test-Path $sourceDir) {
 
 Start-Sleep -Milliseconds 500
 
-# --- 3. 精準啟動 MBAM PIN 設定視窗 ---
+# --- 3. PIN 設定視窗 ---
 Write-Host "--- 2. 啟動 BitLocker PIN 設定 ---" -ForegroundColor Yellow
-$mbamPath = "C:\Program Files\Microsoft\MDOP MBAM\MBAMControlUI.exe"
-if (Test-Path $mbamPath) {
-    Start-Process $mbamPath
-} else {
-    # 備用方案：如果路徑意外不符，嘗試開啟控制台項目
-    Start-Process "control.exe" -ArgumentList "/name Microsoft.BitLockerDriveEncryption"
-}
+Start-Process "C:\Program Files\Microsoft\MDOP MBAM\MBAMControlUI.exe"
 
 Start-Sleep -Milliseconds 500
+
 
 # --- 4. 開啟 Edge 指定網頁 ---
 Write-Host "--- 3. 開啟 Edge 設定網頁 ---" -ForegroundColor Cyan
@@ -49,7 +44,7 @@ Start-Sleep -Milliseconds 500
 Start-Process "msedge.exe" "https://tech.standardchartered.com/tsp/profile/me/mfa "
 Start-Sleep -Seconds 1
 
-# --- 5. 自動導航至「新增鍵盤」清單 ---
+# --- 5. 開啟語言設定 ---
 Start-Process "ms-settings:regionlanguage"
 Start-Sleep -Seconds 1
 
