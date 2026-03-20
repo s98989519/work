@@ -40,7 +40,6 @@ foreach ($c in $choices) {
         Write-Host "[SUCCESS] 已加入: $($IME_Table[$c.ToString()].Name)" -ForegroundColor Green
     }
 }
-Set-WinUserLanguageList $LangList -Force
 
 # 加入 -WarningAction SilentlyContinue 隱藏黃字警告
 Set-WinUserLanguageList $LangList -Force -WarningAction SilentlyContinue | Out-Null
