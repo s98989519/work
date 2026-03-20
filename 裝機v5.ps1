@@ -7,7 +7,7 @@
     $TaskbarPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
     Set-ItemProperty -Path $TaskbarPath -Name "TaskbarAl" -Value 0 -ErrorAction SilentlyContinue
 
-    # --- 2. 選擇印表機地區 (防呆單選) ---
+    # --- 2. 選擇印表機地區  ---
     $Printer_Table = [ordered]@{
         "A" = @{ Name = "台北市 & 新北市"; File = "00GPSfollowmeA.vbs.txt" }
         "B" = @{ Name = "桃園市 & 新竹市"; File = "00GPSfollowmeB.vbs.txt" }
@@ -36,7 +36,7 @@
         "5" = @{ Name = "快速 (Quick)";    ID = "0404:{531FDEBF-9B4C-4A43-A2AA-960E8FCDC732}{6024B45F-5C54-11D4-B921-0080C882687E}" }
     }
 
-    Write-Host "`n=== 2. 請選擇要新增的輸入法 (可多選，例如 34) ===" -ForegroundColor Cyan
+    Write-Host "`n=== 2. 請選擇要新增的輸入法 (可多選) ===" -ForegroundColor Cyan
     foreach ($k in $IME_Table.Keys) { Write-Host "$k. $($IME_Table[$k].Name)" }
 
     $choices = @()
