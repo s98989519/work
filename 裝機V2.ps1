@@ -28,7 +28,7 @@ if (Test-Path $sourceDir) {
     }
 }
 
-# --- 3. PIN 設定視窗 ---
+# --- 3. BitLocker PIN 設定視窗 ---
 Write-Host "--- 2. 啟動 BitLocker PIN 設定 ---" -ForegroundColor Yellow
 $mbam = "C:\Program Files\Microsoft\MDOP MBAM\MBAMControlUI.exe"
 if (Test-Path $mbam) { Start-Process $mbam }
@@ -39,7 +39,7 @@ Start-Process "msedge.exe" "https://myaccount.microsoft.com/?ref=MeControl"
 Start-Sleep -Milliseconds 500
 Start-Process "msedge.exe" "https://tech.standardchartered.com/tsp/profile/me/mfa"
 
-# --- 5. 新增輸入法 (UUID 多選防呆版) ---
+# --- 5. 新增輸入法  ---
 $IME_Table = [ordered]@{
     "1" = @{ Name = "行列 (Array)";   ID = "0404:{E429B25A-E5D3-4D1F-9BE3-0C608477E3A1}{D38EFF65-AA46-4FD5-91A7-67845FB02F5B}" }
     "2" = @{ Name = "大易 (DaYi)";    ID = "0404:{E429B25A-E5D3-4D1F-9BE3-0C608477E3A1}{037B2C25-480C-4D7F-B027-D6CA6B69788A}" }
